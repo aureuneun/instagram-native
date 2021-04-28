@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import AppLoading from 'expo-app-loading';
-import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import LoggedOutNav from './navigations/LoggedOutNav';
+import { NavigationContainer } from '@react-navigation/native';
+import { ApolloProvider, useReactiveVar } from '@apollo/client';
+import client, { isLoggedInVar, tokenVar } from './apollo';
+import LoggedInNav from './navigations/LoggedIntNav';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
   const cacheImages = () => {
-    const images = [
-      require('./assets/logo.png'),
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/840px-Instagram_logo.svg.png',
-    ];
+    const images = [require('./assets/logo.png')];
     return images.map((image) => {
       Asset.loadAsync(image);
     });
@@ -25,6 +27,11 @@ const App = () => {
     });
   };
   const preload = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      isLoggedInVar(true);
+      tokenVar(token);
+    }
     const fonts = cacheFonts();
     const images = cacheImages();
     await Promise.all([...fonts, ...images]);
@@ -39,20 +46,12 @@ const App = () => {
     );
   }
   return (
-    <View style={styles.container}>
-      <Text>Welcom to expo</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
+      </NavigationContainer>
+    </ApolloProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default App;
