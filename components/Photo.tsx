@@ -6,6 +6,18 @@ import { Image, TouchableOpacity, useWindowDimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { StackFactoryParamList } from '../navigations/StackNavFactory';
 import { seeFeed_seeFeed } from '../__generated__/seeFeed';
+import gql from 'graphql-tag';
+import { ApolloCache, FetchResult, useMutation } from '@apollo/client';
+import { toggleLike, toggleLikeVariables } from '../__generated__/toggleLike';
+
+export const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
 
 const Container = styled.View``;
 
@@ -77,6 +89,30 @@ const Photo: React.FC<seeFeed_seeFeed> = ({
       setImageHeight(height / 3);
     });
   }, [file]);
+  const updateToggleLike = (
+    cache: ApolloCache<toggleLike>,
+    result: FetchResult<toggleLike, Record<string, any>, Record<string, any>>
+  ) => {
+    const ok = result?.data?.toggleLike.ok;
+    if (ok) {
+      const photoId = `Photo:${id}`;
+      cache.modify({
+        id: photoId,
+        fields: {
+          isLiked: (prev) => !prev,
+          likes: (prev) => {
+            return isLiked ? prev - 1 : prev + 1;
+          },
+        },
+      });
+    }
+  };
+  const [toggleLike] = useMutation<toggleLike, toggleLikeVariables>(
+    TOGGLE_LIKE_MUTATION,
+    {
+      update: updateToggleLike,
+    }
+  );
   return (
     <Container>
       <Header onPress={() => navigation.navigate('Profile')}>
@@ -90,7 +126,7 @@ const Photo: React.FC<seeFeed_seeFeed> = ({
       />
       <ExtraContainer>
         <Actions>
-          <Action>
+          <Action onPress={() => toggleLike({ variables: { id: +id } })}>
             <Ionicons
               name={isLiked ? 'heart' : 'heart-outline'}
               color={isLiked ? 'tomato' : 'white'}
