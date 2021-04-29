@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { logUserOut } from '../apollo';
 import { Props } from '../navigations/StackNavFactory';
 
 const Me = ({ navigation }: Props) => {
@@ -12,7 +13,9 @@ const Me = ({ navigation }: Props) => {
         justifyContent: 'center',
       }}
     >
-      <Text style={{ color: 'white' }}>Me</Text>
+      <TouchableOpacity onPress={() => logUserOut()}>
+        <Text style={{ color: 'white' }}>Log out</Text>
+      </TouchableOpacity>
     </View>
   );
 };
