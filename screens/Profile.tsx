@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Props } from '../navigations/StackNavFactory';
 
-const Feed = ({ navigation }: Props) => {
+const Profile = ({ navigation }: Props) => {
   return (
     <View
       style={{
@@ -12,12 +12,12 @@ const Feed = ({ navigation }: Props) => {
         justifyContent: 'center',
       }}
     >
-      <Text style={{ color: 'white' }}>Feed</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-        <Text style={{ color: 'white' }}>Profile</Text>
+      <Text style={{ color: 'white' }}>Profile</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Photo')}>
+        <Text style={{ color: 'white' }}>Photo</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default Feed;
+export default Profile;
