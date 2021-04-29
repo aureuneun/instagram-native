@@ -45,3 +45,7 @@ export interface seeFeed_seeFeed {
 export interface seeFeed {
   seeFeed: (seeFeed_seeFeed | null)[] | null;
 }
+
+export interface seeFeedVariables {
+  offset: number;
+}

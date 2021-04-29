@@ -1,16 +1,20 @@
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { ListRenderItemInfo, FlatList, Text } from 'react-native';
+import { ListRenderItemInfo, FlatList } from 'react-native';
 import Photo from '../components/Photo';
 import ScreenLayout from '../components/ScreenLayout';
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from '../fragments';
 import { Props } from '../navigations/StackNavFactory';
-import { seeFeed, seeFeed_seeFeed } from '../__generated__/seeFeed';
+import {
+  seeFeed,
+  seeFeedVariables,
+  seeFeed_seeFeed,
+} from '../__generated__/seeFeed';
 
 const FEED_QUERY = gql`
-  query seeFeed {
-    seeFeed {
+  query seeFeed($offset: Int!) {
+    seeFeed(offset: $offset) {
       ...PhotoFragment
       user {
         username
@@ -29,7 +33,14 @@ const FEED_QUERY = gql`
 `;
 
 const Feed = ({ navigation }: Props) => {
-  const { data, loading, refetch } = useQuery<seeFeed>(FEED_QUERY);
+  const { data, loading, refetch, fetchMore } = useQuery<
+    seeFeed,
+    seeFeedVariables
+  >(FEED_QUERY, {
+    variables: {
+      offset: 0,
+    },
+  });
   const [refreshing, setRefreshing] = useState(false);
   const renderItem = ({
     item: photo,
@@ -45,6 +56,14 @@ const Feed = ({ navigation }: Props) => {
     <ScreenLayout loading={loading}>
       {data?.seeFeed && (
         <FlatList
+          onEndReachedThreshold={0.02}
+          onEndReached={() =>
+            fetchMore({
+              variables: {
+                offset: data?.seeFeed?.length,
+              },
+            })
+          }
           refreshing={refreshing}
           onRefresh={refresh}
           style={{ width: '100%' }}
