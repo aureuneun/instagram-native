@@ -45,6 +45,9 @@ export const cache = new InMemoryCache({
         seeFeed: offsetLimitPagination(),
       },
     },
+    User: {
+      keyFields: (obj) => `User:${obj.username}`,
+    },
   },
 });
 

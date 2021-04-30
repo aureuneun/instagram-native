@@ -36,6 +36,7 @@ const App = () => {
     await persistCache({
       cache,
       storage: new AsyncStorageWrapper(AsyncStorage),
+      serialize: false,
     });
     const fonts = cacheFonts();
     const images = cacheImages();

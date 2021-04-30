@@ -20,15 +20,25 @@ export type StackFactoryParamList = {
   Search: undefined;
   Notifications: undefined;
   Me: undefined;
-  Profile: undefined;
+  Profile: { username: string };
   Photo: undefined;
   Comments: undefined;
-  Likes: undefined;
+  Likes: { id: string };
 };
 
 export type Props = {
   route: RouteProp<StackFactoryParamList, 'Any'>;
   navigation: StackNavigationProp<StackFactoryParamList, 'Any'>;
+};
+
+export type LikesProps = {
+  route: RouteProp<StackFactoryParamList, 'Likes'>;
+  navigation: StackNavigationProp<StackFactoryParamList, 'Likes'>;
+};
+
+export type ProfileProps = {
+  route: RouteProp<StackFactoryParamList, 'Profile'>;
+  navigation: StackNavigationProp<StackFactoryParamList, 'Profile'>;
 };
 
 interface IStackNavFactoryProps {

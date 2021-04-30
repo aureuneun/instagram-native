@@ -17,6 +17,7 @@ const FEED_QUERY = gql`
     seeFeed(offset: $offset) {
       ...PhotoFragment
       user {
+        id
         username
         avatar
       }
@@ -69,7 +70,7 @@ const Feed = ({ navigation }: Props) => {
           style={{ width: '100%' }}
           showsVerticalScrollIndicator={false}
           data={data.seeFeed}
-          keyExtractor={(item) => item!.id}
+          keyExtractor={(item, index) => '' + index}
           renderItem={renderItem}
         />
       )}
