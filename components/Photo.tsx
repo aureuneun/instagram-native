@@ -9,6 +9,7 @@ import { seeFeed_seeFeed } from '../__generated__/seeFeed';
 import gql from 'graphql-tag';
 import { ApolloCache, FetchResult, useMutation } from '@apollo/client';
 import { toggleLike, toggleLikeVariables } from '../__generated__/toggleLike';
+import { seePhoto_seePhoto_user } from '../__generated__/seePhoto';
 
 export const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -69,14 +70,23 @@ const CaptionText = styled.Text`
   margin-left: 5px;
 `;
 
-const Photo: React.FC<seeFeed_seeFeed> = ({
+interface IPhotoProps {
+  id: string;
+  file: string;
+  likes: number;
+  commentNumber: number;
+  isLiked: boolean;
+  user: seePhoto_seePhoto_user;
+  caption: string | null;
+}
+
+const Photo: React.FC<IPhotoProps> = ({
   user: { avatar, username },
   file,
   isLiked,
   likes,
   id,
   caption,
-  comments,
   commentNumber,
 }) => {
   const navigation = useNavigation<

@@ -21,7 +21,7 @@ export type StackFactoryParamList = {
   Notifications: undefined;
   Me: undefined;
   Profile: { username: string };
-  Photo: undefined;
+  Photo: { id: string };
   Comments: undefined;
   Likes: { id: string };
 };
@@ -39,6 +39,11 @@ export type LikesProps = {
 export type ProfileProps = {
   route: RouteProp<StackFactoryParamList, 'Profile'>;
   navigation: StackNavigationProp<StackFactoryParamList, 'Profile'>;
+};
+
+export type PhotoProps = {
+  route: RouteProp<StackFactoryParamList, 'Photo'>;
+  navigation: StackNavigationProp<StackFactoryParamList, 'Photo'>;
 };
 
 interface IStackNavFactoryProps {
