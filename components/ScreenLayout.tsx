@@ -11,6 +11,8 @@ const ScreenLayout: React.FC<IScreenLayoutProps> = ({ loading, children }) => {
       style={{
         backgroundColor: 'black',
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       {loading ? <ActivityIndicator color="white" /> : children}

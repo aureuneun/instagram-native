@@ -32,3 +32,18 @@ export const USER_FRAGMENT = gql`
     isMe
   }
 `;
+
+export const FEED_FRAGMENT = gql`
+  fragment FeedFragment on Photo {
+    ...PhotoFragment
+    user {
+      id
+      username
+      avatar
+    }
+    caption
+    createdAt
+    isMine
+  }
+  ${PHOTO_FRAGMENT}
+`;

@@ -59,6 +59,7 @@ const Me = ({ navigation }: Props) => {
           marginHorizontal: 10,
           borderRadius: 5,
           marginTop: 10,
+          width: '80%',
         }}
         onPress={() => logUserOut()}
       >
