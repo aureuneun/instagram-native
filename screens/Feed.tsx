@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import React, { useState } from 'react';
-import { ListRenderItemInfo, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ListRenderItemInfo, FlatList, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Photo from '../components/Photo';
 import ScreenLayout from '../components/ScreenLayout';
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from '../fragments';
@@ -43,6 +44,19 @@ const Feed = ({ navigation }: Props) => {
     },
   });
   const [refreshing, setRefreshing] = useState(false);
+  const MessagesButton = () => (
+    <TouchableOpacity
+      style={{ marginRight: 25 }}
+      onPress={() => navigation.navigate('Messages')}
+    >
+      <Ionicons name="paper-plane" color="white" size={20} />
+    </TouchableOpacity>
+  );
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: MessagesButton,
+    });
+  }, []);
   const renderItem = ({
     item: photo,
   }: ListRenderItemInfo<seeFeed_seeFeed | null>) => {

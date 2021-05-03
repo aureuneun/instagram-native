@@ -24,6 +24,7 @@ export type StackFactoryParamList = {
   Photo: { id: string };
   Comments: undefined;
   Likes: { id: string };
+  Messages: undefined;
 };
 
 export type Props = {
