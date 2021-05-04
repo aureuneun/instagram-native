@@ -92,56 +92,9 @@ const InputContainer = styled.View`
 const SendButton = styled.TouchableOpacity``;
 
 export default ({ route, navigation }) => {
-  const { data: userData } = useMe();
   const { register, handleSubmit, setValue, getValues, watch } = useForm();
-  const updateSendMessage = (cache, result) => {
-    const {
-      data: {
-        sendMessage: { ok, id },
-      },
-    } = result;
-    if (ok && userData) {
-      const { message } = getValues();
-      setValue('message', '');
-      const messageObj = {
-        id,
-        payload: message,
-        user: {
-          username: userData.me.username,
-          avatar: userData.me.avatar,
-        },
-        read: true,
-        __typename: 'Message',
-      };
-      const messageFragment = cache.writeFragment({
-        data: messageObj,
-        fragment: gql`
-          fragment NewMessage on Message {
-            id
-            payload
-            user {
-              username
-              avatar
-            }
-            read
-          }
-        `,
-      });
-      cache.modify({
-        id: `Room:${route.params.id}`,
-        fields: {
-          messages(prev) {
-            return [...prev, messageFragment];
-          },
-        },
-      });
-    }
-  };
   const [sendMessage, { loading: sendingMessage }] = useMutation(
-    SEND_MESSAGE_MUTATION,
-    {
-      update: updateSendMessage,
-    }
+    SEND_MESSAGE_MUTATION
   );
   const { data, loading, subscribeToMore } = useQuery(ROOM_QUERY, {
     variables: {
@@ -150,6 +103,7 @@ export default ({ route, navigation }) => {
   });
   const client = useApolloClient();
   const updateQuery = (prevQuery, options) => {
+    setValue('message', '');
     const {
       subscriptionData: {
         data: { roomUpdates: message },
@@ -174,12 +128,6 @@ export default ({ route, navigation }) => {
         id: `Room:${route.params.id}`,
         fields: {
           messages(prev) {
-            const existingMessage = prev.find(
-              (aMessage) => aMessage.__ref === incomingMessage.__ref
-            );
-            if (existingMessage) {
-              return prev;
-            }
             return [...prev, incomingMessage];
           },
         },
@@ -187,16 +135,14 @@ export default ({ route, navigation }) => {
     }
   };
   useEffect(() => {
-    if (data?.seeRoom) {
-      subscribeToMore({
-        document: ROOM_UPDATES_SUBSCRIPTION,
-        variables: {
-          id: +route?.params?.id,
-        },
-        updateQuery,
-      });
-    }
-  }, [data]);
+    subscribeToMore({
+      document: ROOM_UPDATES_SUBSCRIPTION,
+      variables: {
+        id: +route?.params?.id,
+      },
+      updateQuery,
+    });
+  }, []);
   useEffect(() => {
     register('message', { required: true });
   }, [register]);
